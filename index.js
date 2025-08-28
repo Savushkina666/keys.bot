@@ -1,12 +1,12 @@
-import TelegramBot from "node-telegram-bot-api";
+import TelegramBot from 'node-telegram-bot-api';
 
-// вставь свой токен
-const token = process.env.TELEGRAM_TOKEN;
-const bot = new TelegramBot(token, { polling: true });
+// Токен берём из переменной окружения
+const API_TOKEN = process.env.BOT_TOKEN;
 
-const bot = new TelegramBot(token, { polling: true });
+// Создаем бота с режимом polling
+const bot = new TelegramBot(API_TOKEN, { polling: true });
 
-// Reply кнопки
+// --- Кнопки внизу экрана (Reply) ---
 const mainMenu = {
   reply_markup: {
     keyboard: [
@@ -17,7 +17,7 @@ const mainMenu = {
   }
 };
 
-// Inline кнопки
+// --- Inline кнопки под сообщением ---
 const inlineMenu = {
   reply_markup: {
     inline_keyboard: [
@@ -25,18 +25,20 @@ const inlineMenu = {
         { text: "⚡️ Действие 1", callback_data: "action1" },
         { text: "🔥 Действие 2", callback_data: "action2" }
       ],
-      [{ text: "💎 Действие 3", callback_data: "action3" }]
+      [
+        { text: "💎 Действие 3", callback_data: "action3" }
+      ]
     ]
   }
 };
 
-// команда /start
+// --- Команда /start ---
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(msg.chat.id, "Привет 👋\nВыбирай кнопки внизу или жми на меню:", mainMenu);
 });
 
-// reply кнопки
-bot.on("message", (msg) => {
+// --- Когда жмут на 📋 Меню (Reply-кнопка) ---
+bot.on('message', (msg) => {
   if (msg.text === "📋 Меню") {
     bot.sendMessage(msg.chat.id, "Вот твое меню действий 👇", inlineMenu);
   } else if (msg.text === "ℹ️ О боте") {
@@ -46,15 +48,18 @@ bot.on("message", (msg) => {
   }
 });
 
-// inline кнопки
-bot.on("callback_query", (query) => {
-  const chatId = query.message.chat.id;
-  if (query.data === "action1") {
+// --- Обработка Inline-кнопок ---
+bot.on('callback_query', (callbackQuery) => {
+  const data = callbackQuery.data;
+  const chatId = callbackQuery.message.chat.id;
+
+  if (data === "action1") {
     bot.sendMessage(chatId, "⚡️ Выполнилось действие 1");
-  } else if (query.data === "action2") {
+  } else if (data === "action2") {
     bot.sendMessage(chatId, "🔥 Выполнилось действие 2");
-  } else if (query.data === "action3") {
+  } else if (data === "action3") {
     bot.sendMessage(chatId, "💎 Выполнилось действие 3");
   }
-  bot.answerCallbackQuery(query.id);
+
+  bot.answerCallbackQuery(callbackQuery.id); // закрывает "часики" у кнопки
 });
