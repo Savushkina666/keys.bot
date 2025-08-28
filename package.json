@@ -1,7 +1,7 @@
 {
   "name": "keys-bot",
   "version": "1.0.0",
-  "description": "Telegram бот на Node.js",
+  "description": "Простой Telegram бот на Node.js",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -9,5 +9,8 @@
   },
   "dependencies": {
     "node-telegram-bot-api": "^0.61.0"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }
