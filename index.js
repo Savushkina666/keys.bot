@@ -2,7 +2,7 @@ import TelegramBot from 'node-telegram-bot-api';
 
 // временно токен прямо в коде (для теста)
 // ❗️ но лучше хранить его в переменных окружения
-const API_TOKEN = "ТВОЙ_ТОКЕН_ОТСЮДА_BOTFATHER";
+const API_TOKEN = "8453813923:AAGlkmUTlAUZ7bgka0WpXwvqUZAIu5qwDQs";
 
 const bot = new TelegramBot(API_TOKEN, { polling: true });
 
