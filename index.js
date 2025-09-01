@@ -1,12 +1,12 @@
 import TelegramBot from 'node-telegram-bot-api';
 
-// Токен берём из переменной окружения
-const API_TOKEN = process.env.BOT_TOKEN;
+// временно токен прямо в коде (для теста)
+// ❗️ но лучше хранить его в переменных окружения
+const API_TOKEN = "ТВОЙ_ТОКЕН_ОТСЮДА_BOTFATHER";
 
-// Создаем бота с режимом polling
 const bot = new TelegramBot(API_TOKEN, { polling: true });
 
-// --- Кнопки внизу экрана (Reply) ---
+// --- Reply-кнопки ---
 const mainMenu = {
   reply_markup: {
     keyboard: [
@@ -17,49 +17,45 @@ const mainMenu = {
   }
 };
 
-// --- Inline кнопки под сообщением ---
+// --- Inline-кнопки ---
 const inlineMenu = {
   reply_markup: {
     inline_keyboard: [
       [
-        { text: "⚡️ Действие 1", callback_data: "action1" },
+        { text: "⚡️ Действие 1 (фото)", callback_data: "action1" },
         { text: "🔥 Действие 2", callback_data: "action2" }
-      ],
-      [
-        { text: "💎 Действие 3", callback_data: "action3" }
       ]
     ]
   }
 };
 
-// --- Команда /start ---
+// --- /start ---
 bot.onText(/\/start/, (msg) => {
-  bot.sendMessage(msg.chat.id, "Привет 👋\nВыбирай кнопки внизу или жми на меню:", mainMenu);
+  bot.sendMessage(msg.chat.id, "Привет 👋 Выбирай кнопки внизу:", mainMenu);
 });
 
-// --- Когда жмут на 📋 Меню (Reply-кнопка) ---
-bot.on('message', (msg) => {
+// --- Reply-меню ---
+bot.on("message", (msg) => {
   if (msg.text === "📋 Меню") {
-    bot.sendMessage(msg.chat.id, "Вот твое меню действий 👇", inlineMenu);
-  } else if (msg.text === "ℹ️ О боте") {
-    bot.sendMessage(msg.chat.id, "Я бот-шаблон 🤖, умею работать и с Reply, и с Inline кнопками.");
-  } else if (msg.text === "❓ Помощь") {
-    bot.sendMessage(msg.chat.id, "Доступные кнопки:\n📋 Меню – показать Inline-действия\nℹ️ О боте – информация\n❓ Помощь – справка");
+    bot.sendMessage(msg.chat.id, "Вот меню действий 👇", inlineMenu);
   }
 });
 
-// --- Обработка Inline-кнопок ---
-bot.on('callback_query', (callbackQuery) => {
-  const data = callbackQuery.data;
+// --- Inline кнопки ---
+bot.on("callback_query", (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
 
-  if (data === "action1") {
-    bot.sendMessage(chatId, "⚡️ Выполнилось действие 1");
-  } else if (data === "action2") {
-    bot.sendMessage(chatId, "🔥 Выполнилось действие 2");
-  } else if (data === "action3") {
-    bot.sendMessage(chatId, "💎 Выполнилось действие 3");
+  if (callbackQuery.data === "action1") {
+    bot.sendPhoto(
+      chatId,
+      "https://drive.google.com/uc?export=view&id=1ZIyZwSoGBAJH5jO9OXtx-oTnuuc-GbRI", // твоя ссылка на фото
+      { caption: "Вот твоё фото 📷" }
+    );
   }
 
-  bot.answerCallbackQuery(callbackQuery.id); // закрывает "часики" у кнопки
+  if (callbackQuery.data === "action2") {
+    bot.sendMessage(chatId, "🔥 Выполнилось действие 2");
+  }
+
+  bot.answerCallbackQuery(callbackQuery.id);
 });
